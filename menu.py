@@ -520,6 +520,56 @@ class Menu:
 
         input("\nPresione Enter para continuar...")
 
+    def modificar_venta(self):
+        system("cls")
+        print("=== Modificar Venta ===\n")
+
+        if not self.ventas:
+            print("No hay ventas registradas.")
+            input("Enter para continuar...")
+            return
+
+        id_venta = input("ID de la venta a modificar: ")
+        venta = next((v for v in self.ventas if v.id == id_venta), None)
+
+        if not venta:
+            print("Venta no encontrada.")
+            input("Enter para continuar...")
+            return
+
+        # Nueva fecha
+        print("\nFecha actual:", venta.fecha)
+        dia = input("Nuevo día: ")
+        mes = input("Nuevo mes: ")
+        anio = input("Nuevo año: ")
+        venta.fecha = f"{dia}/{mes}/{anio}"
+
+        # Nuevo cliente
+        id_cliente = input("Nuevo ID cliente: ")
+        cliente = next((c for c in self.clientes if c.id == id_cliente), None)
+        if cliente:
+            venta.cliente = cliente
+        else:
+            print("Cliente no encontrado. Se conserva el actual.")
+
+        # Nuevas cantidades
+        nuevas_cantidades = []
+        print("\nActualizar cantidades:")
+        for producto, actual in zip(venta.productos, venta.cantidades):
+            entrada = input(f"{producto.nombre} (actual: {actual}): ")
+            try:
+                cantidad = int(entrada)
+            except:
+                cantidad = actual
+            nuevas_cantidades.append(cantidad)
+
+        venta.cantidades = nuevas_cantidades
+        venta.total = venta.calcular_total()
+
+        print("\nVenta actualizada con éxito.")
+        input("Enter para continuar...")
+
+
 
 # Inversiones 
     def reporte_inversion_total(self):
@@ -617,8 +667,8 @@ class Menu:
                 self.registrar_venta()
             elif opcion == "p" or opcion == "P":
                 self.listar_ventas()
-            elif opcion == "q":
-                print("Modificar Venta (no implementado)")
+            elif opcion == "q" or opcion == "Q":
+                self.modificar_venta()
             elif opcion == "r":
                 print("Ventas por Producto (no implementado)")
             elif opcion == "s":
