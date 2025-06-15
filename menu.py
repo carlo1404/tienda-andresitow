@@ -505,45 +505,41 @@ class Menu:
         if not self.ventas:
             print("No hay ventas registradas.")
         else:
+            total_general = 0  # acumulador
             for venta in self.ventas:
                 print(f"\nID Venta: {venta.id}")
                 print(f"Fecha: {venta.fecha}")
                 print(f"Cliente: {venta.cliente.nombre}")
                 print(f"Vendedor: {venta.vendedor.nombre}")
                 print("Productos vendidos:")
-
                 for prod, cant in zip(venta.productos, venta.cantidades):
                     print(f"  - {prod.nombre} x{cant} @ ${prod.precio_venta:,.2f} c/u")
-
                 print(f"Total de la venta: ${venta.total:,.2f}")
                 print("-" * 30)
-
+                total_general += venta.total
+            # Mostrar total acumulado de todas las ventas
+            print(f"\nTOTAL GENERAL DE VENTAS: ${total_general:,.2f}")
         input("\nPresione Enter para continuar...")
 
     def modificar_venta(self):
         system("cls")
         print("=== Modificar Venta ===\n")
-
         if not self.ventas:
             print("No hay ventas registradas.")
             input("Enter para continuar...")
             return
-
         id_venta = input("ID de la venta a modificar: ")
         venta = next((v for v in self.ventas if v.id == id_venta), None)
-
         if not venta:
             print("Venta no encontrada.")
             input("Enter para continuar...")
             return
-
         # Nueva fecha
         print("\nFecha actual:", venta.fecha)
         dia = input("Nuevo día: ")
         mes = input("Nuevo mes: ")
         anio = input("Nuevo año: ")
         venta.fecha = f"{dia}/{mes}/{anio}"
-
         # Nuevo cliente
         id_cliente = input("Nuevo ID cliente: ")
         cliente = next((c for c in self.clientes if c.id == id_cliente), None)
@@ -551,7 +547,6 @@ class Menu:
             venta.cliente = cliente
         else:
             print("Cliente no encontrado. Se conserva el actual.")
-
         # Nuevas cantidades
         nuevas_cantidades = []
         print("\nActualizar cantidades:")
@@ -562,28 +557,19 @@ class Menu:
             except:
                 cantidad = actual
             nuevas_cantidades.append(cantidad)
-
         venta.cantidades = nuevas_cantidades
         venta.total = venta.calcular_total()
-
         print("\nVenta actualizada con éxito.")
         input("Enter para continuar...")
-
-
-
 # Inversiones 
     def reporte_inversion_total(self):
         system("cls")
         print("=== Reporte de Inversión Total ===")
         inversion_total = 0
-
         for producto in self.productos:
             inversion_total += producto.precio_compra * producto.stock
-
         print(f"La inversión total en productos es: ${inversion_total:,.2f}")
         input("Presione Enter para continuar...")
-
-
     def mostrar_menu_principal(self):        
         while True:
             system("cls")
@@ -620,6 +606,7 @@ class Menu:
             print("| z. Salir                      |")
             print("\-------------------------------/")
             opcion = input("Seleccione una opción: ").lower()
+
             if opcion == "a" or opcion == "A":
                 print("Registro de vendedor hecho satisfactoriamente")
                 self.registrar_vendedor()
