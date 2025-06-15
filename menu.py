@@ -498,6 +498,42 @@ class Menu:
         except ValueError:
             print("Error: Ingresaste un valor no válido.")
 
+    def listar_ventas(self):
+        system("cls")
+        print("=== Lista de Ventas ===")
+
+        if not self.ventas:
+            print("No hay ventas registradas.")
+        else:
+            for venta in self.ventas:
+                print(f"\nID Venta: {venta.id}")
+                print(f"Fecha: {venta.fecha}")
+                print(f"Cliente: {venta.cliente.nombre}")
+                print(f"Vendedor: {venta.vendedor.nombre}")
+                print("Productos vendidos:")
+
+                for prod, cant in zip(venta.productos, venta.cantidades):
+                    print(f"  - {prod.nombre} x{cant} @ ${prod.precio_venta:,.2f} c/u")
+
+                print(f"Total de la venta: ${venta.total:,.2f}")
+                print("-" * 30)
+
+        input("\nPresione Enter para continuar...")
+
+
+# Inversiones 
+    def reporte_inversion_total(self):
+        system("cls")
+        print("=== Reporte de Inversión Total ===")
+        inversion_total = 0
+
+        for producto in self.productos:
+            inversion_total += producto.precio_compra * producto.stock
+
+        print(f"La inversión total en productos es: ${inversion_total:,.2f}")
+        input("Presione Enter para continuar...")
+
+
     def mostrar_menu_principal(self):        
         while True:
             system("cls")
@@ -579,8 +615,8 @@ class Menu:
             elif opcion == "o" or opcion == "O":
                 print("venta  registrada con exito")
                 self.registrar_venta()
-            elif opcion == "p":
-                print("Listar Ventas (no implementado)")
+            elif opcion == "p" or opcion == "P":
+                self.listar_ventas()
             elif opcion == "q":
                 print("Modificar Venta (no implementado)")
             elif opcion == "r":
@@ -591,8 +627,8 @@ class Menu:
                 print("Ventas por Vendedor (no implementado)")
             elif opcion == "u":
                 print("Compras por Cliente (no implementado)")
-            elif opcion == "v":
-                print("Reporte Inversión Total (no implementado)")
+            elif opcion == "v" or opcion == "V":
+                self.reporte_inversion_total()
             elif opcion == "w":
                 print("Inversión por Producto (no implementado)")
             elif opcion == "x":
