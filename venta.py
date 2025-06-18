@@ -3,42 +3,42 @@ from datetime import datetime
 class Venta:
     def __init__(self, id, fecha, cliente, vendedor, productos, cantidades):
         self.id = id
-        self.fecha = fecha  # esto debe ser datetime.date
+        self.fecha = fecha  # datetime.date
         self.cliente = cliente
         self.vendedor = vendedor
         self.productos = productos
         self.cantidades = cantidades
         self.total = self.calcular_total()
-    
+
     @classmethod
     def crear_venta(cls, id_venta, fecha, cliente, vendedor, productos, cantidades):
+        if isinstance(fecha, str):
+            try:
+                fecha = datetime.strptime(fecha, "%Y-%m-%d").date()
+            except ValueError:
+                raise ValueError("Formato de fecha inválido. Usa YYYY-MM-DD.")
+
         if not productos or not cantidades:
             raise ValueError("No se agregaron productos.")
-        
+
         if len(productos) != len(cantidades):
             raise ValueError("Productos y cantidades no coinciden.")
 
-        for i in range(len(productos)):
-            producto = productos[i]
-            cantidad = cantidades[i]
-
+        for producto, cantidad in zip(productos, cantidades):
             if cantidad <= 0:
                 raise ValueError(f"La cantidad del producto '{producto.nombre}' debe ser mayor que cero.")
-
             if cantidad > producto.stock:
                 raise ValueError(f"Stock insuficiente para el producto '{producto.nombre}'. Disponible: {producto.stock}, Solicitado: {cantidad}")
 
         # Descontar stock
-        for i in range(len(productos)):
-            productos[i].stock -= cantidades[i]
+        for producto, cantidad in zip(productos, cantidades):
+            producto.stock -= cantidad
 
-        # Crear y devolver la venta
         return cls(id_venta, fecha, cliente, vendedor, productos, cantidades)
+
     def calcular_total(self):
         total = 0
-        for i in range(len(self.productos)):
-            producto = self.productos[i]
-            cantidad = self.cantidades[i]
+        for producto, cantidad in zip(self.productos, self.cantidades):
             total += producto.precio_venta * cantidad
         return round(total, 2)
 
@@ -48,16 +48,12 @@ class Venta:
         print("Cliente:", self.cliente.nombre)
         print("Vendedor:", self.vendedor.nombre)
         print("Productos vendidos:")
-        for i in range(len(self.productos)):
-            producto = self.productos[i]
-            cantidad = self.cantidades[i]
+        for producto, cantidad in zip(self.productos, self.cantidades):
             print("- Nombre del producto:", producto.nombre)
             print("  Precio unitario:", producto.precio_venta)
             print("  Cantidad:", cantidad)
-            print("  Subtotal:", producto.precio_venta * cantidad)
+            print("  Subtotal:", round(producto.precio_venta * cantidad, 2))
         print("Total de la venta:", self.total)
-
-    # 🔽 A PARTIR DE AQUÍ, YA FUERA DE mostrar_detalle
 
     @staticmethod
     def obtener_ventas_por_producto(lista_ventas, id_producto):
@@ -66,10 +62,7 @@ class Venta:
         total_ganancia = 0
 
         for venta in lista_ventas:
-            for i in range(len(venta.productos)):
-                producto = venta.productos[i]
-                cantidad = venta.cantidades[i]
-
+            for producto, cantidad in zip(venta.productos, venta.cantidades):
                 if producto.id == id_producto:
                     subtotal = cantidad * producto.precio_venta
                     ganancia = (producto.precio_venta - producto.precio_compra) * cantidad
@@ -84,6 +77,9 @@ class Venta:
 
                     total_recaudado += subtotal
                     total_ganancia += ganancia
+
+        # Ordenar por fecha si se desea
+        ventas_filtradas.sort(key=lambda v: v["venta"].fecha)
 
         return ventas_filtradas, total_recaudado, total_ganancia
 

@@ -508,7 +508,7 @@ class Menu:
                 for prod, cant in zip(venta.productos, venta.cantidades):
                     print(f"  - {prod.nombre} x{cant} @ ${prod.precio_venta:,.2f} c/u")
                 print(f"Total de la venta: ${venta.total:,.2f}")
-                print("-" * 30)
+                print("---------------------------------------------------------------")
                 total_general += venta.total
             # Mostrar total acumulado de todas las ventas
             print(f"\nTOTAL GENERAL DE VENTAS: ${total_general:,.2f}")
@@ -517,53 +517,73 @@ class Menu:
     def modificar_venta(self):
         system("cls")
         print("=== Modificar Venta ===\n")
+
         if not self.ventas:
             print("No hay ventas registradas.")
-            input("Enter para continuar...")
+            input("Presione Enter para continuar...")
             return
+
         id_venta = input("ID de la venta a modificar: ")
-        venta = next((v for v in self.ventas if v.id == id_venta), None)
+
+        # Buscar venta
+        venta = next((v for v in self.ventas if str(v.id) == id_venta), None)
+
         if not venta:
             print("Venta no encontrada.")
-            input("Enter para continuar...")
+            input("Presione Enter para continuar...")
             return
-        # Nueva fecha
-        print("\nFecha actual:", venta.fecha)
+
+        # --- Modificar fecha ---
+        print(f"\nFecha actual: {venta.fecha}")
         dia = input("Nuevo día: ")
         mes = input("Nuevo mes: ")
         anio = input("Nuevo año: ")
         venta.fecha = f"{dia}/{mes}/{anio}"
-        # Nuevo cliente
+
+        # --- Modificar cliente ---
+        print("\nClientes disponibles:")
+        for c in self.clientes:
+            print(f"ID: {c.id} | Nombre: {c.nombre}")
+
         id_cliente = input("Nuevo ID cliente: ")
-        cliente = next((c for c in self.clientes if c.id == id_cliente), None)
-        if cliente:
-            venta.cliente = cliente
+
+        if id_cliente.isdigit():
+            id_cliente = int(id_cliente)
+            cliente = next((c for c in self.clientes if c.id == id_cliente), None)
+            if cliente:
+                venta.cliente = cliente
+                print("Cliente actualizado.")
+            else:
+                print("Cliente no encontrado. Se conserva el actual.")
         else:
-            print("Cliente no encontrado. Se conserva el actual.")
-        # Nuevas cantidades
+            print("ID inválido. Se conserva el actual.")
+
+        # --- Modificar cantidades ---
         nuevas_cantidades = []
         print("\nActualizar cantidades:")
+
         for producto, actual in zip(venta.productos, venta.cantidades):
             entrada = input(f"{producto.nombre} (actual: {actual}): ")
-            try:
-                cantidad = int(entrada)
-            except:
-                cantidad = actual
-            nuevas_cantidades.append(cantidad)
+            if entrada.isdigit():
+                nuevas_cantidades.append(int(entrada))
+            else:
+                nuevas_cantidades.append(actual)
+
         venta.cantidades = nuevas_cantidades
         venta.total = venta.calcular_total()
-        print("\nVenta actualizada con éxito.")
-        input("Enter para continuar...")
+
+        print("Venta actualizada con éxito.")
+        input("Presione Enter para continuar...")
     
 
-    def mostrar_ventas_por_producto(lista_ventas, lista_productos):
+    def mostrar_ventas_por_producto(self):
         print("=== Ventas por Producto ===")
 
-        if not lista_productos:
+        if not self.productos:
             print("No hay productos registrados.")
             return
 
-        for p in lista_productos:
+        for p in self.productos:
             print(f"ID: {p.id} | Nombre: {p.nombre}")
 
         try:
@@ -572,13 +592,13 @@ class Menu:
             print("ID inválido.")
             return
 
-        producto = next((p for p in lista_productos if p.id == id_producto), None)
+        producto = next((p for p in self.productos if p.id == id_producto), None)
 
         if not producto:
             print("Producto no encontrado.")
             return
 
-        ventas_filtradas, total_recaudado, total_ganancia = Venta.obtener_ventas_por_producto(lista_ventas, id_producto)
+        ventas_filtradas, total_recaudado, total_ganancia = Venta.obtener_ventas_por_producto(self.ventas, id_producto)
 
         if not ventas_filtradas:
             print("No hay ventas registradas para este producto.")
@@ -588,18 +608,21 @@ class Menu:
 
         for v in ventas_filtradas:
             venta = v["venta"]
+            producto_vendido = v["producto"]
             print(f"ID Venta: {venta.id}")
             print(f"Fecha: {venta.fecha}")
             print(f"Cliente: {venta.cliente.nombre}")
             print(f"Vendedor: {venta.vendedor.nombre}")
             print(f"Cantidad vendida: {v['cantidad']}")
-            print(f"Precio unitario: ${v['producto'].precio_venta}")
+            print(f"Precio unitario: ${producto_vendido.precio_venta:.2f}")
             print(f"Subtotal: ${v['subtotal']:.2f}")
             print(f"Ganancia: ${v['ganancia']:.2f}")
-            print("-" * 40)
+            print("------------------------------------------------------" )
 
-        print(f"\n Monto total recaudado: ${total_recaudado:.2f}")
+        # 
+        print(f"\nMonto total recaudado: ${total_recaudado:.2f}")
         print(f"Ganancia total obtenida: ${total_ganancia:.2f}")
+
 
     def mostrar_ventas_por_fecha(lista_ventas):
         print("=== Ventas por Fecha ===")
@@ -876,7 +899,7 @@ class Menu:
                 self.listar_ventas()
             elif opcion == "q" or opcion == "Q":
                 self.modificar_venta()
-            elif opcion == "r" or  opcion == "R":
+            elif opcion == 'r':
                 self.mostrar_ventas_por_producto()
             elif opcion == "s" or opcion == "S":
                 self.mostrar_ventas_por_fecha()
