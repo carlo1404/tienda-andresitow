@@ -12,6 +12,6 @@ class Producto:
     
     @staticmethod
     def crear_producto(id, nombre, precio_compra, stock):
-        # Calcula el valor unitario con 30% de ganancia
+        # Calculamos el valor unitario del producto en un 30% de descuento
         precio_venta = round(precio_compra * 1.3, 2)
         return Producto(id, nombre, precio_compra, precio_venta, stock)
