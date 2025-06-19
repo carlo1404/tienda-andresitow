@@ -449,14 +449,30 @@ class Menu:
             return
         try:
             dia = int(input("Día (DD): "))
-            mes = int(input("Mes (MM): "))
-            anio = int(input("Año (YYYY): "))
-            fecha = datetime(anio, mes, dia).date() 
-            if fecha > date.today():
-                print(" No se puede registrar ventas futuras.")
+            if dia <= 0 or dia > 31:
+                print(" El día debe ser un número entre 1 y 31.")
                 return
-        except:
-            print(" Fecha inválida.")
+                
+            mes = int(input("Mes (MM): "))
+            if mes <= 0 or mes > 12:
+                print(" El mes debe ser un número entre 1 y 12.")
+                return
+                
+            anio = int(input("Año (YYYY): "))
+            if anio < 1900:
+                print(" El año debe ser mayor a 1900.")
+                return
+                
+            try:
+                fecha = datetime(anio, mes, dia).date()
+                if fecha > date.today():
+                    print(" No se puede registrar ventas futuras.")
+                    return
+            except ValueError:
+                print(" La fecha ingresada no es válida.")
+                return
+        except ValueError:
+            print(" Por favor ingrese solo números positivos para la fecha.")
             return
         try:
             id_vendedor = int(input("ID del vendedor: "))
@@ -527,10 +543,34 @@ class Menu:
             input("Presione Enter para continuar...")
             return
         print(f"\nFecha actual: {venta.fecha}")
-        dia = input("Nuevo día: ")
-        mes = input("Nuevo mes: ")
-        anio = input("Nuevo año: ")
-        venta.fecha = f"{dia}/{mes}/{anio}"
+        try:
+            dia = int(input("Nuevo día (DD): "))
+            if dia <= 0 or dia > 31:
+                print(" El día debe ser un número entre 1 y 31.")
+                return
+                
+            mes = int(input("Nuevo mes (MM): "))
+            if mes <= 0 or mes > 12:
+                print(" El mes debe ser un número entre 1 y 12.")
+                return
+                
+            anio = int(input("Nuevo año (YYYY): "))
+            if anio < 1900:
+                print(" El año debe ser mayor a 1900.")
+                return
+                
+            try:
+                fecha = datetime(anio, mes, dia).date()
+                if fecha > date.today():
+                    print(" No se puede registrar ventas futuras.")
+                    return
+                venta.fecha = fecha
+            except ValueError:
+                print(" La fecha ingresada no es válida.")
+                return
+        except ValueError:
+            print(" Por favor ingrese solo números positivos para la fecha.")
+            return
         print("\nClientes disponibles:")
         for c in self.clientes:
             print(f"ID: {c.id} | Nombre: {c.nombre}")
