@@ -4,6 +4,7 @@ from clientes import Cliente
 from productos import Producto
 from venta import Venta
 from datetime import datetime, date
+
 class Menu:
     def __init__(self):
         self.vendedores = []
@@ -583,12 +584,10 @@ class Menu:
         except ValueError:
             print(" Fecha inválida. el formato es : YYYY-MM-DD y que sea una fecha real.")
             return
-
         ventas_filtradas, total_recaudado, total_ganancia = Venta.obtener_ventas_por_fecha(self.ventas, fecha_buscada)
         if not ventas_filtradas:
             print("No hay ventas registradas para esa fecha.")
             return
-
         print(f"Ventas realizadas el día {fecha_buscada}: ")
         for venta in ventas_filtradas:
             print(f"ID Venta: {venta.id}")
