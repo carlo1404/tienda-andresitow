@@ -163,8 +163,8 @@ class Menu:
                 input("Presione Enter para continuar...")
                 return
             nombre = input("Nombre: ")
-            if nombre == "":
-                print("Error - El nombre no puede estar vacío")
+            if nombre == "" or any(char.isdigit() for char in nombre):
+                print("Error - El nombre no puede estar vacío ni contener números")
                 input("Presione Enter para continuar...")
                 return
             telefono = input("Teléfono: ")
@@ -290,11 +290,11 @@ class Menu:
                 print("Error - El precio de compra debe ser mayor a cero")
                 input("Presione Enter para continuar...")
                 return
-            precio_venta = float(input("Precio de venta: "))
-            if precio_venta <= 0:
-                print("Error - El precio de venta debe ser mayor a cero")
-                input("Presione Enter para continuar...")
-                return
+            
+            # Calculate selling price with 30% markup
+            precio_venta = precio_compra * 1.30
+            print(f"Precio de venta calculado (30% sobre costo): ${precio_venta:.2f}")
+
             stock = int(input("Stock disponible: "))
             if stock <= 0:
                 print("Error - El stock disponible debe ser mayor a cero")
@@ -382,7 +382,10 @@ class Menu:
             nuevo_precio_compra = float(input("Nuevo precio de compra: "))
             if nuevo_precio_compra:
                 producto.precio_compra = nuevo_precio_compra
+                # Update selling price with 30% markup when purchase price changes
+                producto.precio_venta = nuevo_precio_compra * 1.30
                 print("Precio de compra modificado correctamente")
+                print(f"Nuevo precio de venta (30% markup): ${producto.precio_venta:.2f}")
         elif opcion == "3":
             nuevo_precio_venta = float(input("Nuevo precio de venta: "))
             if nuevo_precio_venta:

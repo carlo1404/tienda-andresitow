@@ -9,7 +9,6 @@ class Producto:
     def calcular_valor_unitario(self):
         ganancia = self.precio_compra * 0.30
         return round(self.precio_compra + ganancia, 2)
-    
     @staticmethod
     def crear_producto(id, nombre, precio_compra, stock):
         # Calculamos el valor unitario del producto en un 30% de descuento
