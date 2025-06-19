@@ -54,19 +54,16 @@ class Venta:
             print("  Cantidad:", cantidad)
             print("  Subtotal:", round(producto.precio_venta * cantidad, 2))
         print("Total de la venta:", self.total)
-
     @staticmethod
     def obtener_ventas_por_producto(lista_ventas, id_producto):
         ventas_filtradas = []
         total_recaudado = 0
         total_ganancia = 0
-
         for venta in lista_ventas:
             for producto, cantidad in zip(venta.productos, venta.cantidades):
                 if producto.id == id_producto:
                     subtotal = cantidad * producto.precio_venta
                     ganancia = (producto.precio_venta - producto.precio_compra) * cantidad
-
                     ventas_filtradas.append({
                         "venta": venta,
                         "cantidad": cantidad,
@@ -74,72 +71,53 @@ class Venta:
                         "ganancia": ganancia,
                         "producto": producto
                     })
-
                     total_recaudado += subtotal
                     total_ganancia += ganancia
-
         # Ordenar por fecha si se desea
         ventas_filtradas.sort(key=lambda v: v["venta"].fecha)
-
         return ventas_filtradas, total_recaudado, total_ganancia
-
     @staticmethod
     def obtener_ventas_por_fecha(lista_ventas, fecha_buscada):
         ventas_filtradas = []
         total_recaudado = 0
         total_ganancia = 0
-
         for venta in lista_ventas:
             if venta.fecha == fecha_buscada:
                 ventas_filtradas.append(venta)
                 total_recaudado += venta.total
-
                 for i in range(len(venta.productos)):
                     producto = venta.productos[i]
                     cantidad = venta.cantidades[i]
                     ganancia = (producto.precio_venta - producto.precio_compra) * cantidad
                     total_ganancia += ganancia
-
         return ventas_filtradas, total_recaudado, total_ganancia
-    
-
     @staticmethod
     def obtener_ventas_por_vendedor(lista_ventas, id_vendedor):
         ventas_filtradas = []
         total_recaudado = 0
         total_ganancia = 0
-
         for venta in lista_ventas:
             if venta.vendedor.id == id_vendedor:
                 ventas_filtradas.append(venta)
                 total_recaudado += venta.total
-
                 for i in range(len(venta.productos)):
                     producto = venta.productos[i]
                     cantidad = venta.cantidades[i]
                     ganancia = (producto.precio_venta - producto.precio_compra) * cantidad
                     total_ganancia += ganancia
-
         return ventas_filtradas, total_recaudado, total_ganancia
-    
     @staticmethod
     def obtener_compras_por_cliente(lista_ventas, id_cliente):
         compras_filtradas = []
         total_recaudado = 0
         total_ganancia = 0
-
         for venta in lista_ventas:
             if venta.cliente.id == id_cliente:
                 compras_filtradas.append(venta)
                 total_recaudado += venta.total
-
                 for i in range(len(venta.productos)):
                     producto = venta.productos[i]
                     cantidad = venta.cantidades[i]
                     ganancia = (producto.precio_venta - producto.precio_compra) * cantidad
                     total_ganancia += ganancia
-
         return compras_filtradas, total_recaudado, total_ganancia
-    
-
-

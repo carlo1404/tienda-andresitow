@@ -261,6 +261,7 @@ class Menu:
                 print("Error: No se encontró un cliente con ese ID")
         except ValueError:
             print("Error: El ID debe ser un número entero")
+
     def registrar_producto(self):
         system("cls")
         try:
@@ -304,6 +305,7 @@ class Menu:
             print("Producto registrado correctamente")
         except ValueError:
             print("Error - Se esperaba un número válido")
+
     def listar_productos(self):
         system("cls")
         print("=== Lista de Productos ===")
