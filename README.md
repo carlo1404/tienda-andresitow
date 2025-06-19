@@ -1,56 +1,74 @@
-# Tienda Andresitow 🛍️
+# Sistema de Gestión de Ventas
 
-Este proyecto es una aplicación de consola desarrollada en Python que permite gestionar una tienda.  
-Incluye módulos para trabajar con productos, clientes, vendedores y ventas.
+## Descripción
+Este sistema de gestión de ventas es una aplicación desarrollada en Python que permite administrar eficientemente las operaciones comerciales de un negocio. El sistema maneja la gestión integral de vendedores, clientes, productos y ventas, proporcionando una solución completa para el control y seguimiento de las operaciones comerciales.
 
-## 🚀 Funcionalidades principales
+## Características Principales
 
-- Registrar, modificar, listar y eliminar productos
-- Control de stock (productos con y sin stock)
-- Registro de ventas con fecha manual
-- Calculo automático del valor unitario y total de la venta
-- Gestión de clientes y vendedores
+### Gestión de Vendedores
+- Registro de vendedores con información personal
+- Validación de edad (18-65 años)
+- Modificación y eliminación de registros
+- Control de datos personales (ID, nombre, teléfono, dirección)
 
-## 🧠 Estructura del proyecto
+### Gestión de Clientes
+- Registro completo de información del cliente
+- Sistema de identificación única
+- Actualización de datos personales
+- Seguimiento de historial de compras
 
-📁 activity/
-├── menu.py # Menú principal que conecta todo
-├── productos.py # Clase Producto
-├── clientes.py # Clase Cliente
-├── vendedor.py # Clase Vendedor
-├── venta.py # Clase Venta
+### Gestión de Productos
+- Control de inventario
+- Precios de compra y venta
+- Cálculo automático de margen de ganancia (30%)
+- Seguimiento de stock
+- Alertas de productos sin stock
 
-bash
-Copiar
-Editar
+### Sistema de Ventas
+- Registro detallado de transacciones
+- Validación de stock disponible
+- Cálculo automático de totales
+- Múltiples productos por venta
+- Registro de fecha de transacción
 
-## 🛠️ Cómo ejecutar el proyecto
+### Reportes y Análisis
+- Ventas por producto
+- Ventas por fecha
+- Desempeño de vendedores
+- Historial de compras por cliente
+- Cálculo de ganancias y recaudación
 
-1. Clona este repositorio:
-```bash
-git clone https://github.com/carlo1404/tienda-andresitow.git
-cd tienda-andresitow
-Desarrollado por: @carlo1404
-Proyecto para fines educativos 📚
+## Requisitos del Sistema
+- Python 3.x
+- Sistema operativo: Windows/Linux/MacOS
 
-yaml
-Copiar
-Editar
+## Estructura del Proyecto
+```
+activity/
+├── menu.py         # Interfaz principal del sistema
+├── vendedor.py     # Gestión de vendedores
+├── clientes.py     # Gestión de clientes
+├── productos.py    # Gestión de productos
+└── venta.py        # Procesamiento de ventas
+```
 
----
+## Uso del Sistema
+1. Ejecute el archivo menu.py para iniciar el sistema
+2. Seleccione la operación deseada del menú principal
+3. Siga las instrucciones en pantalla para cada operación
 
-### ✅ PASO 2: Guarda el archivo `README.md`
+## Validaciones del Sistema
+- Control de duplicidad de IDs
+- Validación de datos numéricos
+- Verificación de stock disponible
+- Control de fechas válidas
+- Validación de datos obligatorios
 
-Asegúrate de guardarlo dentro de la carpeta `activity`.
+## Características de Seguridad
+- Validación de entrada de datos
+- Prevención de registros duplicados
+- Control de acceso a funciones críticas
+- Confirmación para operaciones de eliminación
 
----
-
-### ✅ PASO 3: Sube el archivo al repositorio
-
-Abre la terminal (estás usando PowerShell, así que perfecto) y ejecutá estos comandos:
-
-```bash
-cd C:\Users\Acer\OneDrive\Documentos\activity
-git add README.md
-git commit -m "Agrego README con detalles del proyecto"
-git push
+## Mantenimiento
+El sistema incluye validaciones robustas y manejo de errores para garantizar la integridad de los datos y una operación fluida.

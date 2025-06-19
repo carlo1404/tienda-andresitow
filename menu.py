@@ -4,7 +4,6 @@ from clientes import Cliente
 from productos import Producto
 from venta import Venta
 from datetime import datetime, date
-
 class Menu:
     def __init__(self):
         self.vendedores = []
@@ -46,7 +45,7 @@ class Menu:
                 return
             edad = int(input("Edad: "))
             if edad <= 17 or edad > 66:
-                print("Error - La edad debe estar entre 18 y 60 años")
+                print("Error - La edad debe estar entre 18 y 65 años")
                 input("Presione Enter para continuar...")
                 return
             vendedor = Vendedor(id_vendedor, nombre, telefono, direccion, edad)
@@ -295,8 +294,7 @@ class Menu:
             # Calculate selling price with 30% markup
             precio_venta = precio_compra * 1.30
             print(f"Precio de venta calculado (30% sobre costo): ${precio_venta:.2f}")
-
-            stock = int(input("Stock disponible: "))
+            stock = int(input("Stock (Cantidad) disponible: "))
             if stock <= 0:
                 print("Error - El stock disponible debe ser mayor a cero")
                 input("Presione Enter para continuar...")
@@ -306,7 +304,6 @@ class Menu:
             print("Producto registrado correctamente")
         except ValueError:
             print("Error - Se esperaba un número válido")
-
     def listar_productos(self):
         system("cls")
         print("=== Lista de Productos ===")
@@ -349,7 +346,6 @@ class Menu:
                     print(f"Precio de venta: {p.precio_venta}")
                     print(f"Stock disponible: {p.stock}")
                     print("----------------------------------------" )
-
     def modificar_producto(self):
         system("cls")
         print("=== Modificar Producto ===")
@@ -372,7 +368,7 @@ class Menu:
         print("1. Nombre:", producto.nombre)
         print("2. Precio de compra:", producto.precio_compra)
         print("3. Precio de venta:", producto.precio_venta)
-        print("4. Stock disponible:", producto.stock)
+        print("4. Stock (Cantidad) disponible:", producto.stock)    
         opcion = input("Seleccione qué desea modificar (1-4) o Enter para cancelar: ")
         if opcion == "1":
             nuevo_nombre = input("Nuevo nombre: ")
@@ -380,23 +376,47 @@ class Menu:
                 producto.nombre = nuevo_nombre
                 print("Nombre modificado correctamente")
         elif opcion == "2":
-            nuevo_precio_compra = float(input("Nuevo precio de compra: "))
-            if nuevo_precio_compra:
+            try:
+                nuevo_precio_compra = float(input("Nuevo precio de compra: "))
+                if nuevo_precio_compra <= 0:
+                    print("El precio debe ser mayor a 0")
+                    input("Presione Enter para continuar...")
+                    return
                 producto.precio_compra = nuevo_precio_compra
                 # Update selling price with 30% markup when purchase price changes
                 producto.precio_venta = nuevo_precio_compra * 1.30
                 print("Precio de compra modificado correctamente")
                 print(f"Nuevo precio de venta (30% markup): ${producto.precio_venta:.2f}")
+            except ValueError:
+                print("Error - Debe ingresar un número válido")
+                input("Presione Enter para continuar...")
+                return
         elif opcion == "3":
-            nuevo_precio_venta = float(input("Nuevo precio de venta: "))
-            if nuevo_precio_venta:
+            try:
+                nuevo_precio_venta = float(input("Nuevo precio de venta: "))
+                if nuevo_precio_venta <= 0:
+                    print("El precio debe ser mayor a 0")
+                    input("Presione Enter para continuar...")
+                    return
                 producto.precio_venta = nuevo_precio_venta
                 print("Precio de venta modificado correctamente")
+            except ValueError:
+                print("Error - Debe ingresar un número válido")
+                input("Presione Enter para continuar...")
+                return
         elif opcion == "4":
-            nuevo_stock = int(input("Nuevo stock disponible: "))
-            if nuevo_stock:
+            try:
+                nuevo_stock = int(input("Nuevo stock disponible: "))
+                if nuevo_stock <= 0:
+                    print("El stock debe ser mayor a 0")
+                    input("Presione Enter para continuar...")
+                    return
                 producto.stock = nuevo_stock
-                print("Stock modificado correctamente")
+                print("Stock (Cantidad) modificado correctamente")
+            except ValueError:
+                print("Error - Debe ingresar un número válido")
+                input("Presione Enter para continuar...")
+                return
         else:
             print("Modificación cancelada")
     def eliminar_producto(self):
@@ -431,7 +451,7 @@ class Menu:
             dia = int(input("Día (DD): "))
             mes = int(input("Mes (MM): "))
             anio = int(input("Año (YYYY): "))
-            fecha = datetime(anio, mes, dia).date()
+            fecha = datetime(anio, mes, dia).date() 
             if fecha > date.today():
                 print(" No se puede registrar ventas futuras.")
                 return
@@ -656,7 +676,6 @@ class Menu:
                 print(f"- {producto.nombre} | Precio: ${producto.precio_venta} | Cantidad: {cantidad} | Subtotal: ${subtotal:.2f} | Ganancia: ${ganancia:.2f}")
             print(f"Total de la compra: ${venta.total:.2f}")
             print("-" * 40)
-
         print(f"\nMonto total de compras del cliente: ${total_recaudado:.2f}")
         print(f"Ganancia generada por el cliente: ${total_ganancia:.2f}")
         input("Presione Enter para continuar...")
@@ -664,38 +683,97 @@ class Menu:
     def reporte_inversion_total(self):
         system("cls")
         print("=== Reporte de Inversión Total ===")
+        
+        if not self.productos:
+            print("No hay productos registrados para calcular la inversión")
+            input("Presione Enter para continuar...")
+            return
+            
         inversion_total = 0
+        print("\nDesglose por producto:")
+        print("-" * 50)
+        
         for producto in self.productos:
-            inversion_total += producto.precio_compra * producto.stock
-        print(f"La inversión total en productos es: ${inversion_total:,.2f}")
+            inversion_producto = producto.precio_compra * producto.stock
+            inversion_total += inversion_producto
+            print(f"Producto: {producto.nombre}")
+            print(f"Precio de compra: ${producto.precio_compra:,.2f}")
+            print(f"Stock: {producto.stock}")
+            print(f"Inversión: ${inversion_producto:,.2f}")
+            print("-" * 50)
+            
+        print(f"\nLa inversión total en inventario es: ${inversion_total:,.2f}")
         input("Presione Enter para continuar...")
+
     def mostrar_inversion_por_producto(self):
+        system("cls")
         print("=== Reporte de Inversión por Producto ===")
+        
+        if not self.productos:
+            print("No hay productos registrados")
+            input("Presione Enter para continuar...")
+            return
+            
         try:
             id_producto = int(input("Ingrese el ID del producto: "))
-        except ValueError:
-            print("ID inválido. Debe ser un número.")
-            return
-        producto_encontrado = False
-        for producto in self.productos:
-            if producto.id == id_producto:
-                producto_encontrado = True
+            if id_producto <= 0:
+                print("El ID debe ser un número positivo")
+                input("Presione Enter para continuar...")
+                return
+                
+            producto = next((p for p in self.productos if p.id == id_producto), None)
+            
+            if producto:
+                print("\nDetalles de inversión:")
+                print("-" * 50)
+                print(f"Producto: {producto.nombre}")
+                print(f"Precio de compra: ${producto.precio_compra:,.2f}")
+                print(f"Stock actual: {producto.stock}")
                 inversion = producto.precio_compra * producto.stock
-                print(f"\nProducto: {producto.nombre}")
-                print(f"Inversión Total: ${inversion:.2f}")
-                break
-        if not producto_encontrado:
-            print("Producto no encontrado.")
+                print(f"Inversión Total: ${inversion:,.2f}")
+            else:
+                print("Producto no encontrado")
+                
+        except ValueError:
+            print("Error: El ID debe ser un número entero")
+            
+        input("Presione Enter para continuar...")
+
     def mostrar_ganancias_totales(self):
-        print("=== Ganancias Totales ===")
+        """Calculate and display total profits from all sales"""
+        system("cls")
+        print("=== Reporte de Ganancias Totales ===")
+        
+        if not self.ventas:
+            print("No hay ventas registradas para calcular ganancias")
+            input("Presione Enter para continuar...")
+            return
+            
         total_ganancias = 0
+        print("\nDesglose de ganancias por venta:")
+        print("-" * 50)
+        
         for venta in self.ventas:
+            ganancia_venta = 0
+            print(f"Venta ID: {venta.id}")
+            print(f"Fecha: {venta.fecha}")
+            
             for i in range(len(venta.productos)):
                 producto = venta.productos[i]
                 cantidad = venta.cantidades[i]
-                ganancia = (producto.precio_venta - producto.precio_compra) * cantidad
-                total_ganancias += ganancia
-        print(f"Ganancia total: ${total_ganancias:.2f}")
+                ganancia_producto = (producto.precio_venta - producto.precio_compra) * cantidad
+                ganancia_venta += ganancia_producto
+                
+                print(f"Producto: {producto.nombre}")
+                print(f"Cantidad: {cantidad}")
+                print(f"Ganancia: ${ganancia_producto:,.2f}")
+                
+            total_ganancias += ganancia_venta
+            print(f"Ganancia de la venta: ${ganancia_venta:,.2f}")
+            print("-" * 50)
+            
+        print(f"\nGanancia total de todas las ventas: ${total_ganancias:,.2f}")
+        input("Presione Enter para continuar...")
     def mostrar_ganancias_por_producto(self):
         try:
             id_producto = int(input("Ingrese el ID del producto: "))
@@ -719,38 +797,44 @@ class Menu:
     def mostrar_menu_principal(self):        
         while True:
             system("cls")
-            print("+*******************************+")
-            print("=================================")
-            print("|     Tienda Carlos Andres      |")
-            print("=================================")
-            print("******** Menu Principal *********")
-            print("| a. Registrar Vendedor         |")
-            print("| b. Listar Vendedores          |")
-            print("| c. Modificar Vendedor         |")
-            print("| d. Eliminar Vendedor          |")
-            print("| e. Registrar Cliente          |")
-            print("| f. Listar Clientes            |")
-            print("| g. Modificar Cliente          |")
-            print("| h. Eliminar Cliente           |")
-            print("| i. Registrar Producto         |")
-            print("| j. Listar Productos           |")
-            print("| k. Productos con Stock        |")
-            print("| l. Productos sin Stock        |")
-            print("| m. Modificar Producto         |")
-            print("| n. Eliminar Producto          |")
-            print("| o. Registrar Venta            |")
-            print("| p. Listar Ventas              |")
-            print("| q. Modificar Venta            |")
-            print("| r. Ventas por Producto        |")
-            print("| s. Ventas por Fecha           |")
-            print("| t. Ventas por Vendedor        |")
-            print("| u. Compras por Cliente        |")
-            print("| v. Reporte Inversión Total    |")
-            print("| w. Inversión por Producto     |")
-            print("| x. Ganancias Totales          |")
-            print("| y. Ganancias por Producto     |")
-            print("| z. Salir                      |")
-            print("\-------------------------------/")
+            print("╔══════════════════════════════════╗")
+            print("║      TIENDA CARLOS ANDRES        ║")
+            print("╠══════════════════════════════════╣")
+            print("║         MENÚ PRINCIPAL           ║")
+            print("╠══════════════════════════════════╣")
+            print("║ [A] Registrar Vendedor           ║")
+            print("║ [B] Listar Vendedores            ║")
+            print("║ [C] Modificar Vendedor           ║")
+            print("║ [D] Eliminar Vendedor            ║")
+            print("╠══════════════════════════════════╣")
+            print("║ [E] Registrar Cliente            ║")
+            print("║ [F] Listar Clientes              ║")
+            print("║ [G] Modificar Cliente            ║")
+            print("║ [H] Eliminar Cliente             ║")
+            print("╠══════════════════════════════════╣")
+            print("║ [I] Registrar Producto           ║")
+            print("║ [J] Listar Productos             ║")
+            print("║ [K] Productos con Stock          ║")
+            print("║ [L] Productos sin Stock          ║")
+            print("║ [M] Modificar Producto           ║")
+            print("║ [N] Eliminar Producto            ║")
+            print("╠══════════════════════════════════╣")
+            print("║ [O] Registrar Venta              ║")
+            print("║ [P] Listar Ventas                ║")
+            print("║ [Q] Modificar Venta              ║")
+            print("╠══════════════════════════════════╣")
+            print("║ [R] Ventas por Producto          ║")
+            print("║ [S] Ventas por Fecha             ║")
+            print("║ [T] Ventas por Vendedor          ║")
+            print("║ [U] Compras por Cliente          ║")
+            print("╠══════════════════════════════════╣")
+            print("║ [V] Reporte Inversión Total      ║")
+            print("║ [W] Inversión por Producto       ║")
+            print("║ [X] Ganancias Totales            ║")
+            print("║ [Y] Ganancias por Producto       ║")
+            print("╠══════════════════════════════════╣")
+            print("║ [Z] Salir                        ║")
+            print("╚══════════════════════════════════╝")
             opcion = input("Seleccione una opción: ").lower()
             if opcion == "a":
                 self.registrar_vendedor()
