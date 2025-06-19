@@ -572,7 +572,7 @@ class Menu:
         # 
         print(f"\nMonto total recaudado: ${total_recaudado:.2f}")
         print(f"Ganancia total obtenida: ${total_ganancia:.2f}")
-    def mostrar_ventas_por_fecha(lista_ventas):
+    def mostrar_ventas_por_fecha(self):
         print("=== Ventas por Fecha ===")
         try:
             entrada = input("Ingrese la fecha (formato: YYYY-MM-DD): ").strip()
@@ -583,10 +583,12 @@ class Menu:
         except ValueError:
             print(" Fecha inválida. el formato es : YYYY-MM-DD y que sea una fecha real.")
             return
-        ventas_filtradas, total_recaudado, total_ganancia = Venta.obtener_ventas_por_fecha(lista_ventas, fecha_buscada)
+
+        ventas_filtradas, total_recaudado, total_ganancia = Venta.obtener_ventas_por_fecha(self.ventas, fecha_buscada)
         if not ventas_filtradas:
             print("No hay ventas registradas para esa fecha.")
             return
+
         print(f"Ventas realizadas el día {fecha_buscada}: ")
         for venta in ventas_filtradas:
             print(f"ID Venta: {venta.id}")
@@ -601,8 +603,8 @@ class Menu:
                 print(f"- {producto.nombre} | Precio: ${producto.precio_venta} | Cantidad: {cantidad} | Subtotal: ${subtotal:.2f} | Ganancia: ${ganancia:.2f}")
             print(f"Total de la venta: ${venta.total:.2f}")
             print("--------------------------------------------------------------------------------------------------------")
-        print(f"\n🔢 Monto total recaudado ese día: ${total_recaudado:.2f}")
-        print(f"💸 Ganancia total del día: ${total_ganancia:.2f}")
+        print(f" Monto total recaudado ese día: ${total_recaudado:.2f}")
+        print(f"Ganancia total del día: ${total_ganancia:.2f}")
     def mostrar_ventas_por_vendedor(self):
         print("=== Ventas por Vendedor ===")
         try:
